@@ -19,7 +19,7 @@ public class XBox360Controller extends Controllers{
     public static final int NUMBER_OF_BUTTONS = 12;
     private JoystickButton[] xboxButtons = new JoystickButton[NUMBER_OF_BUTTONS];
 
-    enum Buttons{
+    enum Button{
         A_BUTTON(1),
         B_BUTTON(2),
         X_BUTTON(3),
@@ -33,12 +33,16 @@ public class XBox360Controller extends Controllers{
 
         public final int BUTTON_NUMBER;
 
-        private Buttons(int buttonNumber){
+        private Button(int buttonNumber){
             BUTTON_NUMBER = buttonNumber;
         }
+        
+        public int getButtonNumber(){
+            return BUTTON_NUMBER;
+        }
 
-        public static Buttons valueOfBtnNum(int btnNum) {
-            for (Buttons e : values()) {
+        public static Button valueOfBtnNum(int btnNum) {
+            for (Button e : values()) {
                 if (e. BUTTON_NUMBER == btnNum) {return e;}
             }
             return null;
@@ -59,7 +63,7 @@ public class XBox360Controller extends Controllers{
 
         xboxController = new XboxController(port);
 
-        for(int i=1; i<=Buttons.SIZE; i++){
+        for(int i=1; i<=Button.SIZE; i++){
             xboButtons[i-1] = new JoystickButton(xboxController, i);
         }
     }
@@ -88,6 +92,14 @@ public class XBox360Controller extends Controllers{
     public void toggleWhenPressed(CommandBase command, int btnNum, boolean interruptible){
         xboxButtons[btnNum-1].toggleWhenPressed(command, interruptible);
     }
+    
+    public void toggleWhenPressed(CommandBase command, Button button){
+        toggleWhenPressed(command, button.getButtonNumber());
+    }
+
+    public void toggleWhenPressed(CommandBase command, Button button, boolean interruptible){
+        toggleWhenPressed(command, button.getButtonNumber(), interruptible);
+    }
 
     public void toggleWhenPressed(CommandBase command, POVDirection direction){
         povButtons[direction.ordinal()].toggleWhenActive(command);
@@ -101,6 +113,10 @@ public class XBox360Controller extends Controllers{
     public void cancelWhenPressed(CommandBase command, int btnNum){
         xboxButtons[btnNum-1].cancelWhenPressed(command);
     }
+    
+    public void cancelWhenPressed(CommandBase command, Button button){
+        cancelWhenPressed(command, button.getButtonNumber());
+    }
 
     public void cancelWhenPressed(CommandBase command, POVDirection direction){
         povButtons[direction.ordinal()].cancelWhenActive(command);
@@ -113,6 +129,14 @@ public class XBox360Controller extends Controllers{
 
     public void whenPressed(CommandBase command, int btnNum, boolean interruptible){
         xboxButtons[btnNum-1].whenPressed(command, interruptible);
+    }
+    
+    public void whenPressed(CommandBase command, Button button){
+        whenPressed(command, button.getButtonNumber());
+    }
+    
+    public void whenPressed(CommandBase command, Button button, boolean interruptible){
+        whenPressed(command, button.getButtonNumber(), interruptible);
     }
 
     public void whenPressed(CommandBase command, POVDirection direction){
@@ -131,6 +155,14 @@ public class XBox360Controller extends Controllers{
     public void whileHeld(CommandBase command, int btnNum, boolean interruptible){
         xboxButtons[btnNum-1].whileHeld(command, interruptible);
     }
+    
+    public void whileHeld(CommandBase command, Button button){
+        whileHeld(command, button.getButtonNumber());
+    }
+    
+    public void whileHeld(CommandBase command, Button button, boolean interruptible){
+        whileHeld(command, button.getButtonNumber(), interruptible);
+    }
 
     public void whileHeld(CommandBase command, POVDirection direction){
         povButtons[direction.ordinal()].whileActiveContinuous(command);
@@ -148,6 +180,14 @@ public class XBox360Controller extends Controllers{
     public void whenHeld(CommandBase command, int btnNum, boolean interruptible){
         xboxButtons[btnNum-1].whenHeld(command, interruptible);
     }
+    
+    public void whenHeld(CommandBase command, Button button){
+        whenHeld(command, button.getButtonNumber());
+    }
+    
+    public void whenHeld(CommandBase command, Button button, boolean interruptible){
+        whenHeld(command, button.getButtonNumber(), interruptible);
+    }
 
     public void whenHeld(CommandBase command, POVDirection direction){
         povButtons[direction.ordinal()].whileActiveOnce(command);
@@ -164,6 +204,14 @@ public class XBox360Controller extends Controllers{
 
     public void whenReleased(CommandBase command, int btnNum, boolean interruptible){
         xboxButtons[btnNum-1].whenReleased(command, interruptible);
+    }
+    
+    public void whenReleased(CommandBase command, Button button){
+        whenReleased(command, button.getButtonNumber());
+    }
+    
+    public void whenReleased(CommandBase command, Button button, boolean interruptible){
+        whenReleased(command, button.getButtonNumber(), interruptible);
     }
 
     public void whenReleased(CommandBase command, POVDirection direction){
