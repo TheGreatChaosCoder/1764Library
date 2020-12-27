@@ -51,12 +51,28 @@ public class XBox360Controller extends Controllers{
         public static final int SIZE = 10;
     }
 
-    private JoystickButton[] xboButtons = new JoystickButton[Buttons.SIZE];
-    //need to add/fix the assign command functions
-    //
-    //
-    //
-    //
+    enum BackTriggers{
+        LEFT_TRIGGER(Hand.kLeft),
+        RIGHT_TRIGGER(Hand.kRight);
+
+        public final Hand HAND;
+
+        private static float threshold = 0.4;
+
+        private BackTrigger(Hand hand){
+            HAND = hand;
+        }
+
+        public static float getThresholdValue(){
+            return threshold;
+        }
+
+        public static final int SIZE = 2;
+    }
+
+    private JoystickButton[] xboButtons = new JoystickButton[Button.SIZE];
+
+    private Trigger[] dpadButtons = new Trigger[POVDirection.SIZE];
 
     public XBox360Controller(int port){
         super(port);
@@ -65,6 +81,10 @@ public class XBox360Controller extends Controllers{
 
         for(int i=1; i<=Button.SIZE; i++){
             xboButtons[i-1] = new JoystickButton(xboxController, i);
+        }
+
+        for(POVDirection direction : POVDirection.values()){
+            dpadButtons[direction.ordinal()] = new Trigger(() -> getPOVDirection() == direction);
         }
     }
 
@@ -77,11 +97,11 @@ public class XBox360Controller extends Controllers{
     }
 
     public double getRightStickX(){
-        return xboxController.getX(Hand.kLeft);
+        return xboxController.getX(Hand.kRight);
     }
 
     public double getRightStickY(){
-        return xboxController.getY(Hand.kLeft);
+        return xboxController.getY(Hand.kRight);
     }
 
     //toggleWhenPressed family of functions
@@ -102,11 +122,11 @@ public class XBox360Controller extends Controllers{
     }
 
     public void toggleWhenPressed(CommandBase command, POVDirection direction){
-        povButtons[direction.ordinal()].toggleWhenActive(command);
+        dpadButtons[direction.ordinal()].toggleWhenActive(command);
     }
 
     public void toggleWhenPressed(CommandBase command, POVDirection direction, boolean interruptible){
-        povButtons[direction.ordinal()].toggleWhenActive(command, interruptible);
+        dpadButtons[direction.ordinal()].toggleWhenActive(command, interruptible);
     }
 
     //canceleWhenPressed family of functions
@@ -119,7 +139,7 @@ public class XBox360Controller extends Controllers{
     }
 
     public void cancelWhenPressed(CommandBase command, POVDirection direction){
-        povButtons[direction.ordinal()].cancelWhenActive(command);
+        dpadButtons[direction.ordinal()].cancelWhenActive(command);
     }
 
     //whenPressed family of functions
@@ -140,11 +160,11 @@ public class XBox360Controller extends Controllers{
     }
 
     public void whenPressed(CommandBase command, POVDirection direction){
-        povButtons[direction.ordinal()].whenActive(command);
+        dpadButtons[direction.ordinal()].whenActive(command);
     }
 
     public void whenPressed(CommandBase command, POVDirection direction, boolean interruptible){
-        povButtons[direction.ordinal()].whenActive(command, interruptible);
+        dpadButtons[direction.ordinal()].whenActive(command, interruptible);
     }
 
     //whileHeld family of functions
@@ -165,11 +185,11 @@ public class XBox360Controller extends Controllers{
     }
 
     public void whileHeld(CommandBase command, POVDirection direction){
-        povButtons[direction.ordinal()].whileActiveContinuous(command);
+        dpadButtons[direction.ordinal()].whileActiveContinuous(command);
     }
 
     public void whileHeld(CommandBase command, POVDirection direction, boolean interruptible){
-        povButtons[direction.ordinal()].whileActiveContinuous(command, interruptible);
+        dpadButtons[direction.ordinal()].whileActiveContinuous(command, interruptible);
     }
 
     //whenHeld family of functions
@@ -190,11 +210,11 @@ public class XBox360Controller extends Controllers{
     }
 
     public void whenHeld(CommandBase command, POVDirection direction){
-        povButtons[direction.ordinal()].whileActiveOnce(command);
+        dpadButtons[direction.ordinal()].whileActiveOnce(command);
     }
 
     public void whenHeld(CommandBase command, POVDirection direction, boolean interruptible){
-        povButtons[direction.ordinal()].whileActiveOnce(command, interruptible);
+        dpadButtons[direction.ordinal()].whileActiveOnce(command, interruptible);
     }
 
     //whenReleased family of functions
@@ -215,11 +235,29 @@ public class XBox360Controller extends Controllers{
     }
 
     public void whenReleased(CommandBase command, POVDirection direction){
-        povButtons[direction.ordinal()].whenInactive(command);
+        dpadButtons[direction.ordinal()].whenInactive(command);
     }
 
     public void whenReleased(CommandBase command, POVDirection direction, boolean interruptible){
-        povButtons[direction.ordinal()].whenInactive(command, interruptible);
+        dpadButtons[direction.ordinal()].whenInactive(command, interruptible);
+    }
+
+    public int getPOV(){
+        return xboxController.getPOV();
+    }
+
+    public POVDirection getPOVDirection(){
+        int pov = xboxController.getPOV(); //in degrees where up=north=0 degrees, increases clockwise
+
+        return getPOVDirection(pov);
+    }
+
+    public boolean isTriggerPressed(Hand hand){
+        return xboxController.getTriggerAxis(hand) > BackTriggers.getThresholdValue();
+    }
+
+    public boolean isTriggerPressed(BackTriggers trigger){
+        return xboxController.getTriggerAxis(trigger.HAND) > BackTriggers.getThresholdValue();
     }
 
 }
