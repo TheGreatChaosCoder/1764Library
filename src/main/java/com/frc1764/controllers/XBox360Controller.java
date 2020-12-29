@@ -51,13 +51,13 @@ public class XBox360Controller extends Controllers{
         public static final int SIZE = 10;
     }
 
-    enum BackTriggers{
+    enum BackTrigger{
         LEFT_TRIGGER(Hand.kLeft),
         RIGHT_TRIGGER(Hand.kRight);
 
         public final Hand HAND;
 
-        private static float threshold = 0.4;
+        private static float threshold = 0.4f;
 
         private BackTrigger(Hand hand){
             HAND = hand;
@@ -74,6 +74,8 @@ public class XBox360Controller extends Controllers{
 
     private Trigger[] dpadButtons = new Trigger[POVDirection.SIZE];
 
+    private Trigger[] backTriggerButtons = new Trigger[BackTrigger.SIZE];
+
     public XBox360Controller(int port){
         super(port);
 
@@ -85,6 +87,10 @@ public class XBox360Controller extends Controllers{
 
         for(POVDirection direction : POVDirection.values()){
             dpadButtons[direction.ordinal()] = new Trigger(() -> getPOVDirection() == direction);
+        }
+
+        for(BackTrigger trigger : BackTrigger.values()){
+            backTriggerButtons[trigger.ordinal()] = new Trigger(() -> isTriggerPressed(trigger));
         }
     }
 
@@ -121,6 +127,14 @@ public class XBox360Controller extends Controllers{
         toggleWhenPressed(command, button.getButtonNumber(), interruptible);
     }
 
+    public void toggleWhenPressed(CommandBase command, BackTrigger trigger){
+        backTriggerButtons[trigger.ordinal()].toggleWhenActive(command);
+    }
+
+    public void toggleWhenPressed(CommandBase command, BackTrigger trigger, boolean interruptible){
+        backTriggerButtons[trigger.ordinal()].toggleWhenActive(command, interruptible);
+    }
+
     public void toggleWhenPressed(CommandBase command, POVDirection direction){
         dpadButtons[direction.ordinal()].toggleWhenActive(command);
     }
@@ -136,6 +150,10 @@ public class XBox360Controller extends Controllers{
     
     public void cancelWhenPressed(CommandBase command, Button button){
         cancelWhenPressed(command, button.getButtonNumber());
+    }
+
+    public void cancelWhenPressed(CommandBase command, BackTrigger trigger){
+        backTriggerButtons[trigger.ordinal()].cancelWhenActive(command);
     }
 
     public void cancelWhenPressed(CommandBase command, POVDirection direction){
@@ -157,6 +175,14 @@ public class XBox360Controller extends Controllers{
     
     public void whenPressed(CommandBase command, Button button, boolean interruptible){
         whenPressed(command, button.getButtonNumber(), interruptible);
+    }
+
+    public void whenPressed(CommandBase command, BackTrigger trigger){
+        backTriggerButtons[trigger.ordinal()].whenActive(command);
+    }
+
+    public void whenPressed(CommandBase command, BackTrigger trigger, boolean interruptible){
+        backTriggerButtons[trigger.ordinal()].whenActive(command, interruptible);
     }
 
     public void whenPressed(CommandBase command, POVDirection direction){
@@ -184,6 +210,14 @@ public class XBox360Controller extends Controllers{
         whileHeld(command, button.getButtonNumber(), interruptible);
     }
 
+    public void whileHeld(CommandBase command, BackTrigger trigger){
+        backTriggerButtons[trigger.ordinal()].whileActiveContinuous(command);
+    }
+
+    public void whileHeld(CommandBase command, BackTrigger trigger, boolean interruptible){
+        backTriggerButtons[trigger.ordinal()].whileActiveContinuous(command, interruptible);
+    }
+
     public void whileHeld(CommandBase command, POVDirection direction){
         dpadButtons[direction.ordinal()].whileActiveContinuous(command);
     }
@@ -207,6 +241,14 @@ public class XBox360Controller extends Controllers{
     
     public void whenHeld(CommandBase command, Button button, boolean interruptible){
         whenHeld(command, button.getButtonNumber(), interruptible);
+    }
+
+    public void whenHeld(CommandBase command, BackTrigger trigger){
+        backTriggerButtons[trigger.ordinal()].whileActiveOnce(command);
+    }
+
+    public void whenHeld(CommandBase command, BackTrigger trigger, boolean interruptible){
+        backTriggerButtons[trigger.ordinal()].whileActiveOnce(command, interruptible);
     }
 
     public void whenHeld(CommandBase command, POVDirection direction){
@@ -234,6 +276,14 @@ public class XBox360Controller extends Controllers{
         whenReleased(command, button.getButtonNumber(), interruptible);
     }
 
+    public void whenReleased(CommandBase command, BackTrigger trigger){
+        backTriggerButtons[trigger.ordinal()].whenInactive(command);
+    }
+
+    public void whenReleased(CommandBase command, BackTrigger trigger, boolean interruptible){
+        backTriggerButtons[trigger.ordinal()].whenInactive(command, interruptible);
+    }
+
     public void whenReleased(CommandBase command, POVDirection direction){
         dpadButtons[direction.ordinal()].whenInactive(command);
     }
@@ -253,11 +303,11 @@ public class XBox360Controller extends Controllers{
     }
 
     public boolean isTriggerPressed(Hand hand){
-        return xboxController.getTriggerAxis(hand) > BackTriggers.getThresholdValue();
+        return xboxController.getTriggerAxis(hand) > BackTrigger.getThresholdValue();
     }
 
-    public boolean isTriggerPressed(BackTriggers trigger){
-        return xboxController.getTriggerAxis(trigger.HAND) > BackTriggers.getThresholdValue();
+    public boolean isTriggerPressed(BackTrigger trigger){
+        return xboxController.getTriggerAxis(trigger.HAND) > BackTrigger.getThresholdValue();
     }
 
 }
