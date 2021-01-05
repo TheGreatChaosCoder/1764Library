@@ -5,12 +5,20 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.frc1764.math.geometry;
+package com.frc1764.units;
 
 /**
  * Add your docs here.
  */
+public class Converter {
 
- //inspired by 254
-public class Translation2d {
+    public static final double meterPerInch = 0.0254;
+
+    public static double inchesToMeters(double inches){
+        return inches * meterPerInch;
+    }
+
+    public static double meterToInches(double meteres){
+        return meteres / meterPerInch;
+    }
 }

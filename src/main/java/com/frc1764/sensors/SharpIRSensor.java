@@ -5,10 +5,24 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package com.frc1764.math.geometry;
+package com.frc1764.sensors;
 
-/**
- * Add your docs here.
- */
-public class Rotation2d {
+import edu.wpi.first.wpilibj.AnalogInput;
+
+public class SharpIRSensor {
+
+    AnalogInput irSensor;
+
+    public SharpIRSensor(int port){
+        irSensor = new AnalogInput(port);
+    }
+
+    public double getVoltage(){
+        return irSensor.getVoltage();
+    }
+
+    public int getValue(){
+        return irSensor.getValue();
+    }
+
 }
