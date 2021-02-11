@@ -18,7 +18,7 @@ public class Converter {
         return inches * meterPerInch;
     }
 
-    public static double meterToInches(double meteres){
-        return meteres / meterPerInch;
+    public static double meterToInches(double meters){
+        return meters / meterPerInch;
     }
 }
